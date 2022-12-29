@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/adapters.dart';
 
@@ -28,7 +27,6 @@ Future<void> init() async {
 
   //! External
   final hivedb = await Hive.initFlutter();
-  serviceLocator.registerLazySingleton(() => hivedb);
-  serviceLocator.registerLazySingleton(() => Dio());
+  // serviceLocator.registerLazySingleton(() => hivedb);
   serviceLocator.registerLazySingleton(() => Connectivity());
 }

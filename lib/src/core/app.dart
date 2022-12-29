@@ -1,5 +1,7 @@
+import 'package:alerts_widgets/alerts_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:offline_first_workflow/src/features/products/presentation/screens/currency_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:offline_first_workflow/src/features/badge/presentation/screens/badge_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -7,12 +9,18 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: Alerts.messengerKey,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          color: Color.fromARGB(255, 37, 37, 37),
+        ),
+        fontFamily: GoogleFonts.robotoSlab().fontFamily,
+        scaffoldBackgroundColor: const Color.fromARGB(255, 37, 37, 37),
       ),
-      home: const CurrencyScreen(),
+      home: const BadgeScreen(),
     );
   }
 }
