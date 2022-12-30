@@ -4,30 +4,33 @@ class Alerts {
   static GlobalKey<ScaffoldMessengerState> messengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  static snackbar({required String message, Color? color, Color? colorText}) {
+  static snackbar({
+    required String message,
+    required Color color,
+    Color? colorText,
+    required IconData icon,
+    Duration duration = const Duration(seconds: 4),
+  }) {
     final snackBar = SnackBar(
+      duration: duration,
       elevation: 0,
-      backgroundColor:
-          color ?? const Color.fromARGB(255, 195, 74, 74).withAlpha(32),
+      backgroundColor: color,
       content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.cancel_outlined,
-            color: colorText ?? const Color.fromARGB(255, 195, 74, 74),
+            icon,
+            color: Colors.white,
           ),
           const SizedBox(width: 10),
           Text(
             message,
-            style: TextStyle(
-              color: colorText ?? const Color.fromARGB(255, 195, 74, 74),
+            style: const TextStyle(
+              color: Colors.white,
               fontSize: 14,
             ),
           )
         ],
-      ),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
       ),
     );
 

@@ -1,5 +1,6 @@
+import 'package:alerts_widgets/alerts_widgets.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_card.dart';
 
 class BadgeScreen extends StatefulWidget {
@@ -10,6 +11,60 @@ class BadgeScreen extends StatefulWidget {
 }
 
 class _BadgeScreenState extends State<BadgeScreen> {
+  late Connectivity connectivity;
+  ConnectivityResult? oldConnectivityResult;
+
+  @override
+  void didChangeDependencies() async {
+    connectivity = Connectivity();
+
+    final firstCheckConnectivity = await connectivity.checkConnectivity();
+
+    if (firstCheckConnectivity == ConnectivityResult.none) {
+      Alerts.snackbar(
+        message: "No tienes conexión a internet",
+        color: Colors.red,
+        icon: Icons.signal_wifi_bad,
+        duration: const Duration(seconds: 20),
+      );
+    }
+
+    Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        connectivity.onConnectivityChanged.listen((event) {
+          Alerts.messengerKey.currentState?.hideCurrentSnackBar();
+          if (event == ConnectivityResult.none) {
+            Alerts.snackbar(
+              message: "No tienes conexión a internet",
+              color: Colors.red,
+              icon: Icons.signal_wifi_bad,
+              duration: const Duration(seconds: 20),
+            );
+          } else if ((event == ConnectivityResult.wifi) &&
+              oldConnectivityResult != null &&
+              oldConnectivityResult != ConnectivityResult.mobile) {
+            Alerts.snackbar(
+              message: "De nuevo en linea",
+              color: Colors.green,
+              icon: Icons.check,
+            );
+          } else if (event == ConnectivityResult.mobile &&
+              oldConnectivityResult != null &&
+              oldConnectivityResult != ConnectivityResult.wifi) {
+            Alerts.snackbar(
+              message: "De nuevo en linea",
+              color: Colors.green,
+              icon: Icons.check,
+            );
+          }
+          oldConnectivityResult = event;
+        });
+      },
+    );
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -67,21 +67,24 @@ class ButtonConvert extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: 200,
-      decoration: BoxDecoration(
-        color: Colors.green.shade400,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: const Align(
-        alignment: Alignment.center,
-        child: Text(
-          'Convertir',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        height: 50,
+        width: 200,
+        decoration: BoxDecoration(
+          color: Colors.green.shade400,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Align(
+          alignment: Alignment.center,
+          child: Text(
+            'Convertir',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
