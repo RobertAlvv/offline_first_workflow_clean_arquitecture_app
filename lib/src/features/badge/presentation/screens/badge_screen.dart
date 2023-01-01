@@ -1,7 +1,11 @@
 import 'package:alerts_widgets/alerts_widgets.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_card.dart';
+
+import '../../../../../injection_container.dart';
 
 class BadgeScreen extends StatefulWidget {
   const BadgeScreen({super.key});
@@ -13,6 +17,7 @@ class BadgeScreen extends StatefulWidget {
 class _BadgeScreenState extends State<BadgeScreen> {
   late Connectivity connectivity;
   ConnectivityResult? oldConnectivityResult;
+  BadgeBloc? badgeBloc = serviceLocator<BadgeBloc>();
 
   @override
   void didChangeDependencies() async {
@@ -67,14 +72,20 @@ class _BadgeScreenState extends State<BadgeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: const [
-            SizedBox(height: 60),
-            _BadgeAppBar(),
-            _BadgeBody(),
-          ],
+    return BlocProvider(
+      create: (context) => badgeBloc!,
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: const [
+                SizedBox(height: 60),
+                _BadgeAppBar(),
+                _BadgeBody(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -82,9 +93,7 @@ class _BadgeScreenState extends State<BadgeScreen> {
 }
 
 class _BadgeAppBar extends StatelessWidget {
-  const _BadgeAppBar({
-    super.key,
-  });
+  const _BadgeAppBar();
 
   @override
   Widget build(BuildContext context) {
