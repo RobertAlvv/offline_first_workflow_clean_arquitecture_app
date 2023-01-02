@@ -47,7 +47,7 @@ class _BadgeItemToState extends State<BadgeItemTo> {
             ),
             const SizedBox(height: 10),
             Text(
-              totalFormat.format(widget.badgeEntity.baseAmount),
+              totalFormat.format(widget.badgeEntity.amount),
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,

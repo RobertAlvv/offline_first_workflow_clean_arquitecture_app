@@ -41,7 +41,7 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
           BadgeState(
             amountBase: 0.0,
             from: BadgeEntity(
-              baseAmount: 1.00,
+              amount: 1.00,
               currency: CurrencyEntity(
                 "Republic Dominican",
                 CountryEntity(
@@ -52,7 +52,7 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
               ),
             ),
             to: BadgeEntity(
-              baseAmount: 1.00,
+              amount: 0.00,
               currency: CurrencyEntity(
                 "United Stated",
                 CountryEntity(
@@ -76,7 +76,7 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
   ) {
     emit(
       state.copyWith(
-        from: state.from.copyWith(baseAmount: event.amount.toDouble()),
+        from: state.from.copyWith(amount: event.amount.toDouble()),
       ),
     );
   }
@@ -91,15 +91,18 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
       to: state.to.currency.country.currencyAbbrevation,
     );
 
-    resp.fold((error) => log("not converted: ${error.toString()}"), (value) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          amountBase: value,
-          to: state.to.copyWith(baseAmount: state.from.baseAmount * value),
-        ),
-      );
-    });
+    resp.fold(
+      (error) => log("not converted: ${error.toString()}"),
+      (value) {
+        emit(
+          state.copyWith(
+            isLoading: false,
+            amountBase: value,
+            to: state.to.copyWith(amount: state.from.amount * value),
+          ),
+        );
+      },
+    );
   }
 
   void _changeCurrencyFromCountry(
@@ -110,6 +113,7 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
       state.copyWith(
         amountBase: 0,
         from: state.from.copyWith(
+          amount: 1,
           currency: state.from.currency.copyWith(country: event.country),
         ),
       ),
@@ -124,6 +128,7 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
       state.copyWith(
         amountBase: 0,
         to: state.to.copyWith(
+          amount: 0,
           currency: state.to.currency.copyWith(country: event.country),
         ),
       ),

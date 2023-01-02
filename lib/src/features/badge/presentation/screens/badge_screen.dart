@@ -1,7 +1,7 @@
-import 'package:alerts_widgets/alerts_widgets.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:utils_material/utils_material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_card.dart';
 
@@ -21,12 +21,12 @@ class _BadgeScreenState extends State<BadgeScreen> {
 
   @override
   void didChangeDependencies() async {
-    connectivity = Connectivity();
+    connectivity = serviceLocator<Connectivity>();
 
     final firstCheckConnectivity = await connectivity.checkConnectivity();
 
     if (firstCheckConnectivity == ConnectivityResult.none) {
-      Alerts.snackbar(
+      ScaffoldMessengerLP.showSnackbar(
         message: "No tienes conexión a internet",
         color: Colors.red,
         icon: Icons.signal_wifi_bad,
@@ -38,9 +38,9 @@ class _BadgeScreenState extends State<BadgeScreen> {
       const Duration(seconds: 3),
       () {
         connectivity.onConnectivityChanged.listen((event) {
-          Alerts.messengerKey.currentState?.hideCurrentSnackBar();
+          ScaffoldMessengerLP.messengerKey.currentState?.hideCurrentSnackBar();
           if (event == ConnectivityResult.none) {
-            Alerts.snackbar(
+            ScaffoldMessengerLP.showSnackbar(
               message: "No tienes conexión a internet",
               color: Colors.red,
               icon: Icons.signal_wifi_bad,
@@ -49,7 +49,7 @@ class _BadgeScreenState extends State<BadgeScreen> {
           } else if ((event == ConnectivityResult.wifi) &&
               oldConnectivityResult != null &&
               oldConnectivityResult != ConnectivityResult.mobile) {
-            Alerts.snackbar(
+            ScaffoldMessengerLP.showSnackbar(
               message: "De nuevo en linea",
               color: Colors.green,
               icon: Icons.check,
@@ -57,7 +57,7 @@ class _BadgeScreenState extends State<BadgeScreen> {
           } else if (event == ConnectivityResult.mobile &&
               oldConnectivityResult != null &&
               oldConnectivityResult != ConnectivityResult.wifi) {
-            Alerts.snackbar(
+            ScaffoldMessengerLP.showSnackbar(
               message: "De nuevo en linea",
               color: Colors.green,
               icon: Icons.check,

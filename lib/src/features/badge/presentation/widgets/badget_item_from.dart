@@ -1,13 +1,14 @@
 import 'package:flag/flag_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
 import 'package:offline_first_workflow/src/features/badge/domain/entities/badge_entity.dart';
 import 'package:offline_first_workflow/src/features/badge/domain/entities/currency_entity.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 
 class BadgeItemFrom extends StatefulWidget {
-  BadgeItemFrom({
+  const BadgeItemFrom({
     super.key,
     required this.badgeEntity,
     required this.titulo,
@@ -21,18 +22,24 @@ class BadgeItemFrom extends StatefulWidget {
 }
 
 class _BadgeItemFromState extends State<BadgeItemFrom> {
-  late TextEditingController textEdtController;
+  late NumberFormat totalFormat;
+  late MoneyMaskedTextController textEdtController;
 
   @override
   void initState() {
     super.initState();
-    textEdtController =
-        TextEditingController(text: widget.badgeEntity.baseAmount.toString());
+    totalFormat = NumberFormat("#,##0.00", "en_US");
+    textEdtController = MoneyMaskedTextController(
+      precision: 2,
+      decimalSeparator: '.',
+      thousandSeparator: ',',
+      initialValue:
+          totalFormat.parse(widget.badgeEntity.amount.toString()).toDouble(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final totalFormat = NumberFormat("#,##0.00", "en_US");
     final badgeBloc = context.watch<BadgeBloc>();
     final toNameCountryAbbr =
         badgeBloc.state.to.currency.country.nameCountryAbbrevation;
@@ -69,12 +76,17 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
                   child: TextField(
                     controller: textEdtController,
                     onChanged: (value) {
-                      final tryParseDouble = double.tryParse(value);
-                      num? valueParsed;
-                      if (tryParseDouble != null) {
-                        valueParsed = totalFormat.parse(value);
+                      final tryParseDouble =
+                          double.tryParse(value.replaceAll(',', ''));
+
+                      if (tryParseDouble == null || tryParseDouble == 0) {
+                        value = "1.00";
+                        textEdtController.text = value;
                       }
-                      badgeBloc.add(OnChangeBaseAmount(valueParsed ?? 0));
+
+                      final valueFormatted = totalFormat.parse(value);
+
+                      badgeBloc.add(OnChangeBaseAmount(valueFormatted));
                     },
                     style: const TextStyle(
                       color: Colors.white,
@@ -121,6 +133,7 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
                 ],
               ),
               onSelected: (value) {
+                textEdtController.text = "1.00";
                 badgeBloc.add(OnChangeCurrencyFromCountry(value));
               },
               itemBuilder: (context) {

@@ -28,12 +28,9 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  alerts_widgets:
-    path: packages/ui/alerts_widgets
-  remote_datasource:
-    path: packages/data/remote_datasource
   connectivity_plus: ^3.0.2
   cupertino_icons: ^1.0.2
+  dart_ping: ^7.0.2
   dartz: ^0.10.1
   equatable: ^2.0.5
   flag: ^6.0.0
@@ -41,11 +38,20 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.1
   flutter_dotenv: ^5.0.2
+  flutter_masked_text2: ^0.9.1
   get_it: ^7.2.0
   google_fonts: ^3.0.1
   hive_flutter: ^1.1.0
   intl: ^0.18.0
+  local_datasource:
+    path: packages/data/local_datasource
   lottie: ^2.1.0
+  network_info:
+    path: packages/data/network_info
+  remote_datasource:
+    path: packages/data/remote_datasource
+  utils_material:
+    path: packages/ui/utils_material
 
 dev_dependencies:
   flutter_lints: ^2.0.0

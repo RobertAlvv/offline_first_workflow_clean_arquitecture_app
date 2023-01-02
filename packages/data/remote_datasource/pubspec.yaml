@@ -11,8 +11,10 @@ dependencies:
     sdk: flutter
   
   dio: ^4.0.6
+  fresh: ^0.4.1
   fresh_dio: ^0.3.2
   get_it: ^7.2.0
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
