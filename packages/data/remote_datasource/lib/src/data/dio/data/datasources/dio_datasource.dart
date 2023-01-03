@@ -3,8 +3,10 @@ import 'package:fresh_dio/fresh_dio.dart';
 class FailureException implements Exception {}
 
 class DioDatasource {
-  static final DioDatasource _instance = DioDatasource._internal();
-  DioDatasource._internal() {
+  static DioDatasource _instance({required String baseUrl}) =>
+      DioDatasource._internal(baseUrl: baseUrl);
+
+  DioDatasource._internal({required String baseUrl}) {
     _fresh = Fresh.oAuth2(
       tokenStorage: InMemoryTokenStorage<OAuth2Token>(),
       refreshToken: (token, client) async {
@@ -16,12 +18,12 @@ class DioDatasource {
     );
 
     _dio = Dio();
-    _dio.options.baseUrl = "https://currency-exchange.p.rapidapi.com";
+    _dio.options.baseUrl = baseUrl;
     _dio.interceptors.add(fresh);
   }
 
-  factory DioDatasource() {
-    return _instance;
+  factory DioDatasource({required String baseUrl}) {
+    return _instance(baseUrl: baseUrl);
   }
 
   late Dio _dio;

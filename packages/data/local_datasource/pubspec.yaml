@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   hive: ^2.2.3
+  hive_flutter: ^1.1.0
   sqlite3: ^1.9.1
 
 dev_dependencies:
