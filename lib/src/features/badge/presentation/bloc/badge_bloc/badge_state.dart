@@ -2,30 +2,26 @@ part of 'badge_bloc.dart';
 
 class BadgeState extends Equatable {
   const BadgeState({
-    required this.from,
-    required this.to,
-    required this.amountBase,
+    required this.badge,
     this.isLoading = false,
+    this.typeError,
   });
 
-  final BadgeEntity from;
-  final BadgeEntity to;
-  final double amountBase;
+  final BadgeEntity badge;
+  final Failure? typeError;
   final bool isLoading;
 
   BadgeState copyWith({
-    BadgeEntity? from,
-    BadgeEntity? to,
-    double? amountBase,
     bool? isLoading,
+    Failure? Function()? typeError,
+    BadgeEntity? badge,
   }) =>
       BadgeState(
-        from: from ?? this.from,
-        to: to ?? this.to,
-        amountBase: amountBase ?? this.amountBase,
+        badge: badge ?? this.badge,
         isLoading: isLoading ?? this.isLoading,
+        typeError: typeError != null ? typeError() : this.typeError,
       );
 
   @override
-  List<Object?> get props => [from, to, amountBase, isLoading];
+  List<Object?> get props => [badge, isLoading, typeError];
 }

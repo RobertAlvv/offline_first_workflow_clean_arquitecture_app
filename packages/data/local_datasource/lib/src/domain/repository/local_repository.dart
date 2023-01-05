@@ -1,5 +1,3 @@
-import 'package:hive_flutter/adapters.dart';
-
 import '../../../local_datasource.dart';
 
 class LocalRepository {
@@ -10,7 +8,7 @@ class LocalRepository {
 
   factory LocalRepository({
     required HiveRepository package,
-    required List<TypeAdapter> objects,
+    required List<HiveConfig> objects,
   }) {
     final instance = _instance(hiveRepository: package);
 
@@ -23,7 +21,7 @@ class LocalRepository {
   late HiveRepository _hiveRepository;
 
   Future initialization(
-    List<TypeAdapter<dynamic>> values,
+    List<HiveConfig> values,
   ) async =>
       await _hiveRepository.initialization(values);
 
@@ -38,13 +36,20 @@ class LocalRepository {
         defaultValue: defaultValue,
       );
 
+  Map<dynamic, dynamic> getAll(
+    String nameBox,
+  ) =>
+      _hiveRepository.getAll(
+        nameBox,
+      );
+
   Future add(
     String nameBox, {
     dynamic value,
   }) async =>
       await _hiveRepository.add(nameBox, value: value);
 
-  Future put(
+  Future<void> put(
     String nameBox, {
     dynamic key,
     dynamic value,

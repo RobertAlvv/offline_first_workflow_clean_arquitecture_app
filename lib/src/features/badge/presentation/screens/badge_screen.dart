@@ -86,7 +86,7 @@ class _BadgeBody extends StatelessWidget {
             message: "No tienes conexión a internet",
             color: Colors.red,
             icon: Icons.signal_wifi_bad,
-            duration: const Duration(seconds: 20),
+            duration: const Duration(seconds: 4),
           );
         }
       },

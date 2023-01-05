@@ -1,20 +1,25 @@
 import 'package:offline_first_workflow/src/features/badge/domain/entities/currency_entity.dart';
 
 class BadgeEntity {
-  final CurrencyEntity currency;
-  final double amount;
+  final double amountBase;
+  final CurrencyEntity currencyFrom;
+  final CurrencyEntity currencyTo;
 
   BadgeEntity({
-    required this.currency,
-    required this.amount,
+    required this.currencyFrom,
+    required this.currencyTo,
+    required this.amountBase,
   });
 
   BadgeEntity copyWith({
-    CurrencyEntity? currency,
-    double? amount,
+    CurrencyEntity? currencyFrom,
+    CurrencyEntity? currencyTo,
+    double? amountBase,
+    String? uid,
   }) =>
       BadgeEntity(
-        currency: currency ?? this.currency,
-        amount: amount ?? this.amount,
+        currencyFrom: currencyFrom ?? this.currencyFrom,
+        currencyTo: currencyTo ?? this.currencyTo,
+        amountBase: amountBase ?? this.amountBase,
       );
 }

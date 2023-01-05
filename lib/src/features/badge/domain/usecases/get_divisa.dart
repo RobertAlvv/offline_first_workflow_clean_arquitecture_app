@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:offline_first_workflow/src/features/badge/domain/repositories/badge_repository.dart';
 
+import '../entities/badge_entity.dart';
+
 class GetDivisa {
   const GetDivisa({required IBadgeRepository repository})
       : _repository = repository;
@@ -8,8 +10,11 @@ class GetDivisa {
   final IBadgeRepository _repository;
 
   Future<Either<dynamic, double>> call({
-    required String from,
-    required String to,
+    required String uuid,
+    required BadgeEntity badge,
   }) async =>
-      await _repository.getDivisa(from: from, to: to);
+      await _repository.getDivisa(
+        badge: badge,
+        uuid: uuid,
+      );
 }

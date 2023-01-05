@@ -16,7 +16,7 @@ class CheckInternetRepositoryImpl implements ICheckInternetRepository {
   }) : _networkInfo = networkInfo;
 
   @override
-  Future<Either<dynamic, bool>> checkInternet() async {
+  Future<Either<bool, bool>> checkInternet() async {
     try {
       final checkConnection = await _networkInfo.checkConnection();
 
@@ -27,7 +27,7 @@ class CheckInternetRepositoryImpl implements ICheckInternetRepository {
   }
 
   @override
-  Either<dynamic, Stream<bool>> onConnectivityChanged() {
+  Either<bool, Stream<bool>> onConnectivityChanged() {
     try {
       final checkConnection = _networkInfo.onConnectivityChanged();
 

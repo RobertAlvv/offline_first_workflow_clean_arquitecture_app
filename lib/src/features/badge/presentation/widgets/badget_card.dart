@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:offline_first_workflow/src/features/badge/domain/error/failures.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_item_from.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_item_to.dart';
+import 'package:utils_material/utils_material.dart';
 
 class BadgeCard extends StatelessWidget {
   const BadgeCard({super.key});
@@ -57,12 +59,12 @@ class BadgesWidget extends StatelessWidget {
           children: [
             BadgeItemFrom(
               titulo: "Moneda Base",
-              badgeEntity: state.from,
+              currencyEntity: state.badge.currencyFrom,
             ),
             const IconDivider(),
             BadgeItemTo(
               titulo: "Moneda Destino",
-              badgeEntity: state.to,
+              currencyEntity: state.badge.currencyTo,
             ),
           ],
         );
@@ -81,6 +83,8 @@ class ButtonConvert extends StatelessWidget {
     final badgeBloc = context.watch<BadgeBloc>();
     return InkWell(
       onTap: () {
+        ScaffoldMessengerLP.messengerKey.currentState
+            ?.hideCurrentMaterialBanner();
         badgeBloc.add(OnGetConvertedCurrency());
       },
       child: Container(
@@ -92,12 +96,19 @@ class ButtonConvert extends StatelessWidget {
         ),
         child: Align(
           alignment: Alignment.center,
-          child: BlocSelector<BadgeBloc, BadgeState, bool>(
-            selector: (state) {
-              return state.isLoading;
+          child: BlocConsumer<BadgeBloc, BadgeState>(
+            listener: (context, state) {
+              if (state.typeError == CacheFailure()) {
+                ScaffoldMessengerLP.showMaterialBanner(
+                  content: const Text(
+                      "No tienes registro de esta divisa en la base de datos local"),
+                  backgroundColor: Colors.white,
+                  actions: [const Icon(Icons.outlet_sharp)],
+                );
+              }
             },
             builder: (context, state) {
-              if (state) {
+              if (state.isLoading) {
                 return Container(
                   margin: const EdgeInsets.all(8.0),
                   child: const CircularProgressIndicator(color: Colors.white),
@@ -166,10 +177,11 @@ class BadgeBase extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BadgeBloc, BadgeState>(
       builder: (context, state) {
-        final currencyFrom = state.from.currency.country.currencyAbbrevation;
-        final currencyTo = state.to.currency.country.currencyAbbrevation;
+        final currencyFrom =
+            state.badge.currencyFrom.country.currencyAbbrevation;
+        final currencyTo = state.badge.currencyTo.country.currencyAbbrevation;
 
-        if (state.amountBase > 0) {
+        if (state.badge.amountBase > 0) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -183,7 +195,7 @@ class BadgeBase extends StatelessWidget {
               ),
               const SizedBox(width: 14),
               Text(
-                '1 $currencyFrom = ${state.amountBase.toStringAsFixed(3)} $currencyTo',
+                '1 $currencyFrom = ${state.badge.amountBase.toStringAsFixed(3)} $currencyTo',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,

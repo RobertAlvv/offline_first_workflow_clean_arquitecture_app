@@ -9,7 +9,5 @@ class HiveDatasource {
     return _instance;
   }
 
-  late HiveInterface _hive;
-
-  HiveInterface get hive => _hive;
+  HiveInterface get hive => Hive;
 }

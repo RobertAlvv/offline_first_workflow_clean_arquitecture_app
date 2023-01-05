@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
-import 'package:offline_first_workflow/src/features/badge/domain/entities/badge_entity.dart';
-import 'package:offline_first_workflow/src/features/badge/domain/entities/currency_entity.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
+
+import '../../domain/entities/country_entity.dart';
+import '../../domain/entities/currency_entity.dart';
 
 class BadgeItemFrom extends StatefulWidget {
   const BadgeItemFrom({
     super.key,
-    required this.badgeEntity,
+    required this.currencyEntity,
     required this.titulo,
   });
 
-  final BadgeEntity badgeEntity;
+  final CurrencyEntity currencyEntity;
   final String titulo;
 
   @override
@@ -34,7 +35,7 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
       decimalSeparator: '.',
       thousandSeparator: ',',
       initialValue:
-          totalFormat.parse(widget.badgeEntity.amount.toString()).toDouble(),
+          totalFormat.parse(widget.currencyEntity.amount.toString()).toDouble(),
     );
   }
 
@@ -42,7 +43,7 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
   Widget build(BuildContext context) {
     final badgeBloc = context.watch<BadgeBloc>();
     final toNameCountryAbbr =
-        badgeBloc.state.to.currency.country.nameCountryAbbrevation;
+        badgeBloc.state.badge.currencyFrom.country.nameCountryAbbrevation;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -63,7 +64,7 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  "${widget.badgeEntity.currency.country.currencyAbbrevation}\$ ",
+                  "${widget.currencyEntity.country.currencyAbbrevation}\$ ",
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -113,13 +114,13 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
               child: Row(
                 children: [
                   Flag.fromString(
-                    widget.badgeEntity.currency.country.flagCountry,
+                    widget.currencyEntity.country.flagCountry,
                     height: 40,
                     width: 40,
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    widget.badgeEntity.currency.country.nameCountryAbbrevation,
+                    widget.currencyEntity.country.nameCountryAbbrevation,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,

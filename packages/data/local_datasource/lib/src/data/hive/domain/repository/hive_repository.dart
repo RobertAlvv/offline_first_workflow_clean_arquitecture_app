@@ -3,21 +3,33 @@ import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:local_datasource/src/data/hive/data/datasource/hive_datasource.dart';
 
+class HiveConfig {
+  final dynamic adaptar;
+  final String nameOpenBox;
+  final bool box;
+
+  HiveConfig({
+    required this.adaptar,
+    required this.nameOpenBox,
+    required this.box,
+  });
+}
+
 class HiveRepository {
   final HiveDatasource _datasource;
-
-  static List<Box> boxes = [];
 
   HiveRepository({required HiveDatasource datasource})
       : _datasource = datasource;
 
-  Future initialization<E>(List<TypeAdapter> values) async {
+  Future initialization<E>(List<HiveConfig> values) async {
     await _datasource.hive.initFlutter();
 
     for (var i = 0; i < values.length; i++) {
       if (!Hive.isAdapterRegistered(i)) {
-        Hive.registerAdapter(values[i]);
-        boxes.add(await _openBox(values[i].toString()));
+        Hive.registerAdapter(values[i].adaptar);
+      }
+      if (values[i].box) {
+        await _openBox(values[i].nameOpenBox);
       }
     }
   }
@@ -42,41 +54,53 @@ class HiveRepository {
     );
   }
 
-  Future<void> put(String nameBox, {dynamic key, dynamic value}) async {
-    return await boxes[0].put(key, value);
+  Future<void> put(
+    String nameBox, {
+    dynamic key,
+    dynamic value,
+  }) async {
+    return await _datasource.hive.box(nameBox).put(key, value);
   }
 
   Future<int> add(String nameBox, {dynamic value}) async {
-    return await boxes[0].add(value);
+    return await _datasource.hive.box(nameBox).add(value);
   }
 
   Future<int> clear(String nameBox) async {
-    return await boxes[0].clear();
+    return await _datasource.hive.box(nameBox).clear();
   }
 
   Future<void> close(String nameBox) async {
-    return await boxes[0].close();
+    return await _datasource.hive.box(nameBox).close();
   }
 
   Future<void> get(String nameBox, dynamic key, {dynamic defaultValue}) async {
-    return await boxes[0].get(key, defaultValue: defaultValue);
+    return await _datasource.hive
+        .box(nameBox)
+        .get(key, defaultValue: defaultValue);
+  }
+
+  Map<dynamic, dynamic> getAll(String nameBox) {
+    final box = _datasource.hive.box(nameBox);
+
+    return box.toMap();
   }
 
   Future<void> delete(String nameBox, {dynamic key}) async {
-    return await boxes[0].delete(key);
+    return await _datasource.hive.box(nameBox).delete(key);
   }
 
   Future<void> deleteAll(
     String nameBox, {
     required Iterable<dynamic> keys,
   }) async {
-    return await boxes[0].deleteAll(keys);
+    return await _datasource.hive.box(nameBox).deleteAll(keys);
   }
 
   Future<Iterable<int>> addAll(
     String nameBox, {
     required Iterable<dynamic> values,
   }) async {
-    return await boxes[0].addAll(values);
+    return await _datasource.hive.box(nameBox).addAll(values);
   }
 }

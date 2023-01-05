@@ -11,7 +11,7 @@ class ScaffoldMessengerLP {
     required Color color,
     Color? colorText,
     required IconData icon,
-    Duration duration = const Duration(seconds: 4),
+    Duration duration = const Duration(seconds: 2),
   }) {
     final snackBar = SnackBar(
       duration: duration,
@@ -39,14 +39,23 @@ class ScaffoldMessengerLP {
     messengerKey.currentState!.showSnackBar(snackBar);
   }
 
-  static showMaterialBanner() {
-    const materialBanner = MaterialBanner(
-      content: Text("Conten"),
-      actions: [
-        Icon(Icons.abc_outlined),
-      ],
+  static showMaterialBanner({
+    Color? backgroundColor,
+    required Widget content,
+    required List<Widget> actions,
+    Widget? leading,
+    Duration duration = const Duration(seconds: 4),
+  }) {
+    final materialBanner = MaterialBanner(
+      backgroundColor: backgroundColor,
+      content: content,
+      actions: actions,
+      leading: leading,
     );
 
     messengerKey.currentState!.showMaterialBanner(materialBanner);
+
+    Future.delayed(
+        duration, () => messengerKey.currentState!.hideCurrentMaterialBanner());
   }
 }

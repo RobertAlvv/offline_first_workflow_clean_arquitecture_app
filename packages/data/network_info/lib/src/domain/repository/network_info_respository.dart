@@ -23,7 +23,7 @@ class NetworkInfoRepositoryImpl implements INetworkInfoRepository {
     if (event == ConnectivityResult.none) {
       return false;
     } else {
-      return _internetConnectionDatasource.hasConnection;
+      return await _internetConnectionDatasource.hasConnection;
     }
   }
 
@@ -31,8 +31,10 @@ class NetworkInfoRepositoryImpl implements INetworkInfoRepository {
   Stream<bool> onConnectivityChanged() {
     StreamController<bool> newValue = StreamController<bool>.broadcast();
 
-    _connectivityDatasource.onConnectivityChanged.listen((event) {
-      newValue.add(event != ConnectivityResult.none);
+    _connectivityDatasource.onConnectivityChanged.listen((event) async {
+      final hasConnection = await _internetConnectionDatasource.hasConnection;
+
+      newValue.add(event != ConnectivityResult.none && hasConnection);
     });
 
     return newValue.stream;

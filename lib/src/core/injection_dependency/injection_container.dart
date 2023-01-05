@@ -13,7 +13,17 @@ import 'package:offline_first_workflow/src/features/badge/domain/repositories/ba
 import 'package:offline_first_workflow/src/features/badge/domain/usecases/get_divisa.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 
+import '../../features/badge/data/dtos/badge_dto_local.dart';
+
 final serviceLocator = GetIt.instance;
+
+List<HiveConfig> boxes = [
+  HiveConfig(
+    adaptar: BadgeDtoLocalAdapter(),
+    nameOpenBox: "badge",
+    box: true,
+  ),
+];
 
 Future<void> init() async {
   // // Bloc
@@ -52,16 +62,24 @@ Future<void> init() async {
   serviceLocator.registerLazySingleton<IBadgeLocalDataSource>(
       () => BadgeLocalDataSourceImpl(repository: serviceLocator()));
 
-  serviceLocator.registerLazySingleton<RemoteRepository>(() =>
-      RemoteRepository(package: DioRepository(package: serviceLocator())));
+  serviceLocator.registerLazySingleton<RemoteRepository>(
+      () => RemoteRepository(package: serviceLocator()));
 
-  serviceLocator.registerLazySingleton<LocalRepository>(() => LocalRepository(
-      package: HiveRepository(datasource: serviceLocator()), objects: []));
-
-  serviceLocator.registerLazySingleton<HiveDatasource>(() => HiveDatasource());
+  serviceLocator.registerLazySingleton<DioRepository>(
+      () => DioRepository(package: serviceLocator()));
 
   serviceLocator.registerLazySingleton<DioDatasource>(
       () => DioDatasource(baseUrl: "https://currency-exchange.p.rapidapi.com"));
+
+  serviceLocator.registerLazySingleton<LocalRepository>(
+      () => LocalRepository(package: serviceLocator(), objects: boxes));
+
+  serviceLocator.registerLazySingleton<HiveRepository>(
+      () => HiveRepository(datasource: serviceLocator()));
+
+  serviceLocator.registerLazySingleton<HiveDatasource>(
+    () => HiveDatasource(),
+  );
 
   serviceLocator.registerLazySingleton<INetworkInfoRepository>(
       () => NetworkInfoRepositoryImpl());
