@@ -1,18 +1,19 @@
+import 'country_entity.dart';
+
 class CurrencyEntity {
-  final String name;
+  final double amount;
   final CountryEntity country;
 
-  CurrencyEntity(this.name, this.country);
-}
-
-class CountryEntity {
-  CountryEntity({
-    required this.flagCountry,
-    required this.currencyAbbrevation,
-    required this.nameCountryAbbrevation,
+  CurrencyEntity({
+    required this.amount,
+    required this.country,
   });
-
-  final String flagCountry;
-  final String currencyAbbrevation;
-  final String nameCountryAbbrevation;
+  CurrencyEntity copyWith({
+    double? amount,
+    CountryEntity? country,
+  }) =>
+      CurrencyEntity(
+        amount: amount ?? this.amount,
+        country: country ?? this.country,
+      );
 }

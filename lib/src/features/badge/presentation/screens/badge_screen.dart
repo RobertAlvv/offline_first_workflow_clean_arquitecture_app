@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:utils_material/utils_material.dart';
+import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_card.dart';
+
+import '../../../../core/injection_dependency/injection_container.dart';
+import '../../../checking_internet/presentation/bloc/check_internet/check_internet_bloc.dart';
 
 class BadgeScreen extends StatefulWidget {
   const BadgeScreen({super.key});
@@ -10,16 +16,33 @@ class BadgeScreen extends StatefulWidget {
 }
 
 class _BadgeScreenState extends State<BadgeScreen> {
+  final BadgeBloc? badgeBloc = serviceLocator<BadgeBloc>();
+
+  late CheckInternetBloc checkInternetBloc;
+
+  @override
+  void didChangeDependencies() {
+    checkInternetBloc = context.read<CheckInternetBloc>();
+    checkInternetBloc.add(OnCheckInternet());
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: const [
-            SizedBox(height: 60),
-            _BadgeAppBar(),
-            _BadgeBody(),
-          ],
+    return BlocProvider(
+      create: (context) => badgeBloc!,
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: const [
+                SizedBox(height: 60),
+                _BadgeAppBar(),
+                _BadgeBody(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -27,9 +50,7 @@ class _BadgeScreenState extends State<BadgeScreen> {
 }
 
 class _BadgeAppBar extends StatelessWidget {
-  const _BadgeAppBar({
-    super.key,
-  });
+  const _BadgeAppBar();
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +73,44 @@ class _BadgeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          BadgeCard(),
-        ],
+    final badgeBloc = context.watch<BadgeBloc>();
+    final badgeAtCreated = badgeBloc.state.badge.createdAt;
+
+    final formatDate = DateFormat("dd/MM/yyyy hh:mm a");
+
+    return BlocListener<CheckInternetBloc, CheckInternetState>(
+      listener: (context, state) {
+        UtilsMaterialMessenger.messengerKey.currentState?.hideCurrentSnackBar();
+        if (state.hasInternet == true) {
+          Snackbars.show(
+            message: "De nuevo en linea",
+            color: Colors.green,
+            icon: Icons.check,
+          );
+        } else {
+          Snackbars.show(
+            message: "No tienes conexión a internet",
+            color: Colors.red,
+            icon: Icons.signal_wifi_bad,
+            duration: const Duration(seconds: 4),
+          );
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const BadgeCard(),
+            const SizedBox(height: 20),
+            if (badgeAtCreated != null)
+              CardWidget(
+                height: 80,
+                child: Text(
+                    '''La información viene de tu base de datos local\nUltima fecha de actualizacion: ${formatDate.format(badgeAtCreated)}'''),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -1,0 +1,85 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "offline_first_workflow",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "offline_first_workflow (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "offline_first_workflow (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "local_datasource",
+            "cwd": "packages\\data\\local_datasource",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "local_datasource (profile mode)",
+            "cwd": "packages\\data\\local_datasource",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "local_datasource (release mode)",
+            "cwd": "packages\\data\\local_datasource",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "remote_datasource",
+            "cwd": "packages\\data\\remote_datasource",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "remote_datasource (profile mode)",
+            "cwd": "packages\\data\\remote_datasource",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "remote_datasource (release mode)",
+            "cwd": "packages\\data\\remote_datasource",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "alerts_widgets",
+            "cwd": "packages\\ui\\alerts_widgets",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "alerts_widgets (profile mode)",
+            "cwd": "packages\\ui\\alerts_widgets",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "alerts_widgets (release mode)",
+            "cwd": "packages\\ui\\alerts_widgets",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

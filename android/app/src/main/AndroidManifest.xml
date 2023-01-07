@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.offline_first_workflow">
+    package="com.simple_badge.offline_first_workflow">
    <application
-        android:label="offline_first_workflow"
+        android:label="simple badge"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
