@@ -30,6 +30,7 @@ class HiveRepository {
       }
       if (values[i].box) {
         await _openBox(values[i].nameOpenBox);
+        await clear(values[i].nameOpenBox);
       }
     }
   }
@@ -50,7 +51,6 @@ class HiveRepository {
       encryptionCipher: encryptionCipher,
       path: path,
       collection: collection,
-      encryptionKey: encryptionKey,
     );
   }
 

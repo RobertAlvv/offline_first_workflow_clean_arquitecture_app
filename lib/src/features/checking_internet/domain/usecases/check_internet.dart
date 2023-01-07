@@ -7,7 +7,7 @@ class CheckInternet {
 
   final ICheckInternetRepository _repository;
 
-  Future<Either<dynamic, bool>> call() async {
+  Future<Either<bool, bool>> call() async {
     return await _repository.checkInternet();
   }
 }

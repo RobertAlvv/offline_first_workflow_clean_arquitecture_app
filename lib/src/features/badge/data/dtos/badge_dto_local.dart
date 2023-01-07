@@ -11,17 +11,21 @@ class BadgeDtoLocal extends HiveObject {
   final String currencyAbbrevationFrom;
   @HiveField(2)
   final String currencyAbbrevationTo;
+  @HiveField(3)
+  final DateTime? createdAt;
 
   BadgeDtoLocal({
     required this.amountBase,
     required this.currencyAbbrevationFrom,
     required this.currencyAbbrevationTo,
+    required this.createdAt,
   });
 
   BadgeDtoLocal copyWith({
     double? amountBase,
     String? currencyAbbrevationFrom,
     String? currencyAbbrevationTo,
+    DateTime? createdAt,
   }) =>
       BadgeDtoLocal(
         amountBase: amountBase ?? this.amountBase,
@@ -29,6 +33,7 @@ class BadgeDtoLocal extends HiveObject {
             currencyAbbrevationFrom ?? this.currencyAbbrevationFrom,
         currencyAbbrevationTo:
             currencyAbbrevationTo ?? this.currencyAbbrevationTo,
+        createdAt: createdAt ?? this.createdAt,
       );
 
   factory BadgeDtoLocal.fromModel(BadgeEntity badgeEntity) {
@@ -37,6 +42,7 @@ class BadgeDtoLocal extends HiveObject {
       currencyAbbrevationFrom:
           badgeEntity.currencyFrom.country.currencyAbbrevation,
       currencyAbbrevationTo: badgeEntity.currencyTo.country.currencyAbbrevation,
+      createdAt: DateTime.now(),
     );
   }
 

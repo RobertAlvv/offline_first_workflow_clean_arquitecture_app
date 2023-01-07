@@ -4,13 +4,16 @@ import 'package:local_datasource/local_datasource.dart';
 import 'package:offline_first_workflow/src/features/badge/data/dtos/badge_dto_local.dart';
 
 abstract class IBadgeLocalDataSource {
+  Map<int, BadgeDtoLocal?> getAllBadge();
   MapEntry<int, BadgeDtoLocal?>? getBadge({
     required String from,
     required String to,
   });
-  Map<int, BadgeDtoLocal?> getAllBadge();
-  Future<dynamic> addBadge({required BadgeDtoLocal badge});
-  Future<void> putBadge(int key, BadgeDtoLocal value);
+  Future<dynamic> saveBadge({
+    required String from,
+    required String to,
+    required BadgeDtoLocal badge,
+  });
 }
 
 class BadgeLocalDataSourceImpl implements IBadgeLocalDataSource {
@@ -18,6 +21,21 @@ class BadgeLocalDataSourceImpl implements IBadgeLocalDataSource {
 
   const BadgeLocalDataSourceImpl({required LocalRepository repository})
       : _repository = repository;
+
+  @override
+  Map<int, BadgeDtoLocal?> getAllBadge() {
+    try {
+      final resp = _repository.getAll("badge");
+      Map<int, BadgeDtoLocal?> respvalue = {};
+      resp.forEach((key, value) {
+        respvalue.putIfAbsent(key, () => value);
+      });
+
+      return respvalue;
+    } catch (e) {
+      return throw [];
+    }
+  }
 
   @override
   MapEntry<int, BadgeDtoLocal?>? getBadge({
@@ -44,7 +62,25 @@ class BadgeLocalDataSourceImpl implements IBadgeLocalDataSource {
   }
 
   @override
-  Future<dynamic> addBadge({required BadgeDtoLocal badge}) async {
+  Future saveBadge({
+    required String from,
+    required String to,
+    required BadgeDtoLocal badge,
+  }) async {
+    try {
+      final badgeLocal = getBadge(from: from, to: to);
+
+      if (badgeLocal?.value == null) {
+        await _addBadge(badge);
+      } else {
+        await _putBadge(key: badgeLocal!.key, value: badge);
+      }
+    } catch (e) {
+      return throw [];
+    }
+  }
+
+  Future<dynamic> _addBadge(BadgeDtoLocal badge) async {
     try {
       return await _repository.add("badge", value: badge);
     } catch (e) {
@@ -53,23 +89,10 @@ class BadgeLocalDataSourceImpl implements IBadgeLocalDataSource {
     }
   }
 
-  @override
-  Map<int, BadgeDtoLocal?> getAllBadge() {
-    try {
-      final resp = _repository.getAll("badge");
-      Map<int, BadgeDtoLocal?> respvalue = {};
-      resp.forEach((key, value) {
-        respvalue.putIfAbsent(key, () => value);
-      });
-
-      return respvalue;
-    } catch (e) {
-      return throw [];
-    }
-  }
-
-  @override
-  Future<void> putBadge(int key, BadgeDtoLocal value) async {
+  Future<void> _putBadge({
+    required int key,
+    required BadgeDtoLocal value,
+  }) async {
     try {
       await _repository.put("badge", key: key, value: value);
     } catch (e) {

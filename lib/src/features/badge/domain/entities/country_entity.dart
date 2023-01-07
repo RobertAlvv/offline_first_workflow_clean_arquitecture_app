@@ -1,5 +1,3 @@
-import 'package:hive_flutter/adapters.dart';
-
 class CountryEntity {
   CountryEntity({
     required this.flagCountry,

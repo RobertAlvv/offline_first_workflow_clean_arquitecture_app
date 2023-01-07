@@ -9,12 +9,6 @@ class GetDivisa {
 
   final IBadgeRepository _repository;
 
-  Future<Either<dynamic, double>> call({
-    required String uuid,
-    required BadgeEntity badge,
-  }) async =>
-      await _repository.getDivisa(
-        badge: badge,
-        uuid: uuid,
-      );
+  Future<Either<dynamic, BadgeEntity>> call(BadgeEntity badge) async =>
+      await _repository.getDivisa(badge);
 }

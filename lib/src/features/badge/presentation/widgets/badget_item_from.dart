@@ -43,7 +43,7 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
   Widget build(BuildContext context) {
     final badgeBloc = context.watch<BadgeBloc>();
     final toNameCountryAbbr =
-        badgeBloc.state.badge.currencyFrom.country.nameCountryAbbrevation;
+        badgeBloc.state.badge.currencyTo.country.nameCountryAbbrevation;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -113,12 +113,6 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
             PopupMenuButton<CountryEntity>(
               child: Row(
                 children: [
-                  Flag.fromString(
-                    widget.currencyEntity.country.flagCountry,
-                    height: 40,
-                    width: 40,
-                  ),
-                  const SizedBox(width: 10),
                   Text(
                     widget.currencyEntity.country.nameCountryAbbrevation,
                     style: const TextStyle(
@@ -130,6 +124,12 @@ class _BadgeItemFromState extends State<BadgeItemFrom> {
                   const Icon(
                     Icons.keyboard_arrow_down_sharp,
                     color: Colors.white,
+                  ),
+                  const SizedBox(width: 10),
+                  Flag.fromString(
+                    widget.currencyEntity.country.flagCountry,
+                    height: 40,
+                    width: 40,
                   ),
                 ],
               ),

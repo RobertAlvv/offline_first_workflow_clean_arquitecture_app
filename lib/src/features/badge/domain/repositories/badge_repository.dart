@@ -8,30 +8,24 @@ import '../entities/badge_entity.dart';
 import '../error/failures.dart';
 
 abstract class IBadgeRepository {
-  Future<Either<Failure, double>> getDivisa({
-    required String uuid,
-    required BadgeEntity badge,
-  });
+  Future<Either<Failure, BadgeEntity>> getDivisa(BadgeEntity badge);
 }
 
 class BadgeRepositoryImpl implements IBadgeRepository {
-  final IBadgeRemoteDataSource _remoteData;
-  final IBadgeLocalDataSource _localData;
+  final IBadgeRemoteDataSource _remoteSource;
+  final IBadgeLocalDataSource _localSource;
   final INetworkInfoRepository _networkInfo;
 
   const BadgeRepositoryImpl({
-    required IBadgeRemoteDataSource remoteData,
-    required IBadgeLocalDataSource localData,
+    required IBadgeRemoteDataSource remoteSource,
+    required IBadgeLocalDataSource localSource,
     required INetworkInfoRepository networkInfo,
-  })  : _remoteData = remoteData,
-        _localData = localData,
+  })  : _remoteSource = remoteSource,
+        _localSource = localSource,
         _networkInfo = networkInfo;
 
   @override
-  Future<Either<Failure, double>> getDivisa({
-    required String uuid,
-    required BadgeEntity badge,
-  }) async {
+  Future<Either<Failure, BadgeEntity>> getDivisa(BadgeEntity badge) async {
     final from = badge.currencyFrom.country.currencyAbbrevation;
     final to = badge.currencyTo.country.currencyAbbrevation;
 
@@ -39,29 +33,37 @@ class BadgeRepositoryImpl implements IBadgeRepository {
       final checkConnection = await _networkInfo.checkConnection();
 
       if (checkConnection) {
-        final resp = await _remoteData.getDivisa(from: from, to: to);
+        final resp = await _remoteSource.getDivisa(from: from, to: to);
 
-        final badgeLocal = _localData.getBadge(from: from, to: to);
+        final badgeNew = badge.copyWith(
+          createdAt: () => null,
+          amountBase: double.parse(resp),
+          currencyTo: badge.currencyTo.copyWith(
+            amount: badge.currencyFrom.amount * double.parse(resp),
+          ),
+        );
 
-        final newBadge = badge.copyWith(amountBase: double.parse(resp));
+        final badgeNewLocal = BadgeDtoLocal.fromModel(badgeNew);
 
-        if (badgeLocal?.value == null) {
-          await _localData.addBadge(badge: BadgeDtoLocal.fromModel(newBadge));
-        } else {
-          await _localData.putBadge(
-            badgeLocal!.key,
-            BadgeDtoLocal.fromModel(newBadge),
-          );
-        }
+        await _localSource.saveBadge(from: from, to: to, badge: badgeNewLocal);
 
-        return Right(double.parse(resp));
+        return Right(badgeNew);
       } else {
-        final badge = _localData.getBadge(from: from, to: to);
+        final badgeLocal = _localSource.getBadge(from: from, to: to);
 
-        if (badge?.value?.amountBase == null) {
+        if (badgeLocal?.value?.amountBase == null) {
           return Left(CacheFailure());
         }
-        return Right(badge!.value!.amountBase);
+
+        final badgeNew = badge.copyWith(
+          amountBase: badgeLocal!.value!.amountBase,
+          createdAt: () => badgeLocal.value!.createdAt,
+          currencyTo: badge.currencyTo.copyWith(
+            amount: badge.currencyFrom.amount * badgeLocal.value!.amountBase,
+          ),
+        );
+
+        return Right(badgeNew);
       }
     } catch (e) {
       return Left(ServerFailure());

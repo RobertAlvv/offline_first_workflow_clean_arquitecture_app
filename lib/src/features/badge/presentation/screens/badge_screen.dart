@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:utils_material/utils_material.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_card.dart';
@@ -72,17 +73,22 @@ class _BadgeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final badgeBloc = context.watch<BadgeBloc>();
+    final badgeAtCreated = badgeBloc.state.badge.createdAt;
+
+    final formatDate = DateFormat("dd/MM/yyyy hh:mm a");
+
     return BlocListener<CheckInternetBloc, CheckInternetState>(
       listener: (context, state) {
-        ScaffoldMessengerLP.messengerKey.currentState?.hideCurrentSnackBar();
+        UtilsMaterialMessenger.messengerKey.currentState?.hideCurrentSnackBar();
         if (state.hasInternet == true) {
-          ScaffoldMessengerLP.showSnackbar(
+          Snackbars.show(
             message: "De nuevo en linea",
             color: Colors.green,
             icon: Icons.check,
           );
-        } else if (state.hasInternet == false) {
-          ScaffoldMessengerLP.showSnackbar(
+        } else {
+          Snackbars.show(
             message: "No tienes conexión a internet",
             color: Colors.red,
             icon: Icons.signal_wifi_bad,
@@ -94,8 +100,15 @@ class _BadgeBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            BadgeCard(),
+          children: [
+            const BadgeCard(),
+            const SizedBox(height: 20),
+            if (badgeAtCreated != null)
+              CardWidget(
+                height: 80,
+                child: Text(
+                    '''La información viene de tu base de datos local\nUltima fecha de actualizacion: ${formatDate.format(badgeAtCreated)}'''),
+              ),
           ],
         ),
       ),

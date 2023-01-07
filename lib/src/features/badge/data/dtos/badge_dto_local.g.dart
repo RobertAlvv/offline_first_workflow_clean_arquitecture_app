@@ -20,19 +20,22 @@ class BadgeDtoLocalAdapter extends TypeAdapter<BadgeDtoLocal> {
       amountBase: fields[0] as double,
       currencyAbbrevationFrom: fields[1] as String,
       currencyAbbrevationTo: fields[2] as String,
+      createdAt: fields[3] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BadgeDtoLocal obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.amountBase)
       ..writeByte(1)
       ..write(obj.currencyAbbrevationFrom)
       ..writeByte(2)
-      ..write(obj.currencyAbbrevationTo);
+      ..write(obj.currencyAbbrevationTo)
+      ..writeByte(3)
+      ..write(obj.createdAt);
   }
 
   @override

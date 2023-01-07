@@ -29,7 +29,7 @@ class _BadgeItemToState extends State<BadgeItemTo> {
         "en_US");
 
     final badgeBloc = context.watch<BadgeBloc>();
-    final toNameCountryAbbr =
+    final fromNameCountryAbbr =
         badgeBloc.state.badge.currencyFrom.country.nameCountryAbbrevation;
 
     return Row(
@@ -64,12 +64,6 @@ class _BadgeItemToState extends State<BadgeItemTo> {
             PopupMenuButton<CountryEntity>(
               child: Row(
                 children: [
-                  Flag.fromString(
-                    widget.currencyEntity.country.flagCountry,
-                    height: 40,
-                    width: 40,
-                  ),
-                  const SizedBox(width: 10),
                   Text(
                     widget.currencyEntity.country.nameCountryAbbrevation,
                     style: const TextStyle(
@@ -82,6 +76,12 @@ class _BadgeItemToState extends State<BadgeItemTo> {
                     Icons.keyboard_arrow_down_sharp,
                     color: Colors.white,
                   ),
+                  const SizedBox(width: 10),
+                  Flag.fromString(
+                    widget.currencyEntity.country.flagCountry,
+                    height: 40,
+                    width: 40,
+                  ),
                 ],
               ),
               onSelected: (value) {
@@ -91,7 +91,7 @@ class _BadgeItemToState extends State<BadgeItemTo> {
                 List<PopupMenuItem<CountryEntity>> newCountries = [];
 
                 for (var country in badgeBloc.countries) {
-                  if (country.nameCountryAbbrevation != toNameCountryAbbr) {
+                  if (country.nameCountryAbbrevation != fromNameCountryAbbr) {
                     newCountries.add(PopupMenuItem<CountryEntity>(
                       value: country,
                       height: 0,

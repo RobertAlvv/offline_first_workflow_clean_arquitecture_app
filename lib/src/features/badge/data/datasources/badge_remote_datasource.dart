@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:remote_datasource/remote_datasource.dart';
 
 abstract class IBadgeRemoteDataSource {
@@ -16,7 +17,7 @@ class BadgeRemoteDataSourceImpl implements IBadgeRemoteDataSource {
       final response = await _repository.get(
         '/exchange',
         headers: {
-          "X-RapidAPI-Key": "8e8f987914mshbcfcd90080fc6e4p1d6f54jsn770c179cb34f"
+          "X-RapidAPI-Key": dotenv.env['X-RapidAPI-Key'],
         },
         queryParameters: {
           "from": from,

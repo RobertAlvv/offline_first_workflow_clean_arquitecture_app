@@ -9,7 +9,7 @@ class OnConnectivityChanged {
 
   final ICheckInternetRepository _repository;
 
-  Either<dynamic, Stream<bool>> call() {
+  Either<bool, Stream<bool>> call() {
     return _repository.onConnectivityChanged();
   }
 }

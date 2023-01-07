@@ -4,8 +4,8 @@ import 'package:dartz/dartz.dart';
 import 'package:network_info/network_info.dart';
 
 abstract class ICheckInternetRepository {
-  Future<Either<dynamic, bool>> checkInternet();
-  Either<dynamic, Stream<bool>> onConnectivityChanged();
+  Future<Either<bool, bool>> checkInternet();
+  Either<bool, Stream<bool>> onConnectivityChanged();
 }
 
 class CheckInternetRepositoryImpl implements ICheckInternetRepository {

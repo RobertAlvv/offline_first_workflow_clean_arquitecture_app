@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:lottie/lottie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:utils_material/utils_material.dart';
+
 import 'package:offline_first_workflow/src/features/badge/domain/error/failures.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/bloc/badge_bloc/badge_bloc.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_item_from.dart';
 import 'package:offline_first_workflow/src/features/badge/presentation/widgets/badget_item_to.dart';
-import 'package:utils_material/utils_material.dart';
 
 class BadgeCard extends StatelessWidget {
   const BadgeCard({super.key});
@@ -83,7 +85,7 @@ class ButtonConvert extends StatelessWidget {
     final badgeBloc = context.watch<BadgeBloc>();
     return InkWell(
       onTap: () {
-        ScaffoldMessengerLP.messengerKey.currentState
+        UtilsMaterialMessenger.messengerKey.currentState
             ?.hideCurrentMaterialBanner();
         badgeBloc.add(OnGetConvertedCurrency());
       },
@@ -99,7 +101,7 @@ class ButtonConvert extends StatelessWidget {
           child: BlocConsumer<BadgeBloc, BadgeState>(
             listener: (context, state) {
               if (state.typeError == CacheFailure()) {
-                ScaffoldMessengerLP.showMaterialBanner(
+                Banners.show(
                   content: const Text(
                       "No tienes registro de esta divisa en la base de datos local"),
                   backgroundColor: Colors.white,

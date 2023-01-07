@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:offline_first_workflow/src/features/badge/domain/entities/currency_entity.dart';
@@ -88,30 +87,18 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
     Emitter<BadgeState> emit,
   ) async {
     emit(state.copyWith(isLoading: true));
-    final resp = await getDivisa.call(
-      badge: state.badge,
-      uuid: '',
-    );
+    final resp = await getDivisa(state.badge);
 
     resp.fold(
       (error) async {
         log("not converted: ${error.runtimeType.toString()}");
-
         emit(state.copyWith(typeError: () => error));
       },
-      (value) {
-        emit(
-          state.copyWith(
-            badge: state.badge.copyWith(
-              amountBase: value,
-              currencyTo: state.badge.currencyTo.copyWith(
-                amount: state.badge.currencyFrom.amount * value,
-              ),
-            ),
-          ),
-        );
+      (newBadge) {
+        emit(state.copyWith(badge: newBadge));
       },
     );
+
     await Future.delayed(const Duration(milliseconds: 500));
     emit(state.copyWith(isLoading: false, typeError: () => null));
   }
@@ -124,8 +111,11 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
       state.copyWith(
         badge: state.badge.copyWith(
           amountBase: 0,
-          currencyFrom: state.badge.currencyFrom
-              .copyWith(amount: 1, country: event.country),
+          createdAt: () => null,
+          currencyFrom: state.badge.currencyFrom.copyWith(
+            amount: 1,
+            country: event.country,
+          ),
         ),
       ),
     );
@@ -139,7 +129,11 @@ class BadgeBloc extends Bloc<BadgeEvent, BadgeState> {
       state.copyWith(
         badge: state.badge.copyWith(
           amountBase: 0,
-          currencyTo: state.badge.currencyTo.copyWith(country: event.country),
+          createdAt: () => null,
+          currencyTo: state.badge.currencyTo.copyWith(
+            country: event.country,
+            amount: 0,
+          ),
         ),
       ),
     );

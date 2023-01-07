@@ -11,7 +11,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      scaffoldMessengerKey: ScaffoldMessengerLP.messengerKey,
+      scaffoldMessengerKey: UtilsMaterialMessenger.messengerKey,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           elevation: 0,
